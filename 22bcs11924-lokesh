@@ -1,0 +1,123 @@
+Easy level:
+import java.util.Scanner;
+
+public class SquareRootCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter a number: ");
+        try {
+            double number = Double.parseDouble(scanner.nextLine()); // Convert input to double
+            
+            if (number < 0) {
+                throw new IllegalArgumentException("Cannot calculate the square root of a negative number.");
+            }
+            
+            double result = Math.sqrt(number);
+            System.out.println("The square root of " + number + " is " + result);
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Please enter a valid numeric value.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred.");
+        } finally {
+            scanner.close(); // Close the scanner
+        }
+    }
+}
+medium level:
+import java.util.Scanner;
+
+class InvalidPinException extends Exception {
+    public InvalidPinException(String message) {
+        super(message);
+    }
+}
+
+class InsufficientBalanceException extends Exception {
+    public InsufficientBalanceException(String message) {
+        super(message);
+    }
+}
+
+public class ATMWithdrawalSystem {
+    private static final String CORRECT_PIN = "1234";
+    private static double balance = 5000.0;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Enter PIN: ");
+        String enteredPin = scanner.nextLine();
+        
+        try {
+            if (!enteredPin.equals(CORRECT_PIN)) {
+                throw new InvalidPinException("Error: Invalid PIN.");
+            }
+            
+            System.out.print("Enter withdrawal amount: ");
+            double withdrawalAmount = scanner.nextDouble();
+            
+            if (withdrawalAmount > balance) {
+                throw new InsufficientBalanceException("Error: Insufficient balance.");
+            }
+
+            balance -= withdrawalAmount;
+            System.out.println("Withdrawal successful. Remaining balance: " + balance);
+        } catch (InvalidPinException | InsufficientBalanceException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Current balance: " + balance);
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred.");
+        } finally {
+            scanner.close(); // Close the scanner
+        }
+    }
+}
+Hard level:
+import java.util.HashSet;
+import java.util.Set;
+
+class CourseFullException extends Exception {
+    public CourseFullException(String message) {
+        super(message);
+    }
+}
+
+class PrerequisiteNotMetException extends Exception {
+    public PrerequisiteNotMetException(String message) {
+        super(message);
+    }
+}
+
+public class UniversityEnrollmentSystem {
+    static final int MAX_ENROLLMENT = 2;
+    private static Set<String> completedCourses = new HashSet<>();
+    private static int enrolledStudents = 0;
+
+    public static void main(String[] args) {
+        try {
+            enrollStudent("Advanced Java", "Core Java");
+        } catch (CourseFullException | PrerequisiteNotMetException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void enrollStudent(String courseName, String prerequisite) throws CourseFullException, PrerequisiteNotMetException {
+        if (enrolledStudents >= MAX_ENROLLMENT) {
+            throw new CourseFullException("Error: Course " + courseName + " is full.");
+        }
+
+        if (!completedCourses.contains(prerequisite)) {
+            throw new PrerequisiteNotMetException("Error: PrerequisiteNotMetException - Complete " + prerequisite + " before enrolling in " + courseName + ".");
+        }
+
+        enrolledStudents++;
+        System.out.println("Student successfully enrolled in " + courseName);
+    }
+
+    public static void addCompletedCourse(String courseName) {
+        completedCourses.add(courseName);
+    }
+}
